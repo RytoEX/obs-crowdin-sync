@@ -60,6 +60,7 @@ async function getSubmodules(): Promise<string[]> {
 export async function removePreviousTranslations(): Promise<void> {
 	await Promise.all([
 		emptyTranslationDir('UI/data/locale'),
+		emptyTranslationDir('plugins/enc-amf/data/locale'),
 		emptyTranslationDir('plugins/enc-amf/resources/locale'),
 		emptyTranslationDir('plugins/mac-virtualcam/src/obs-plugin/data/locale')
 	]);
@@ -458,7 +459,7 @@ function pushChanges(detachedSubmodules: string[], submodules: string[]): void {
 			process.chdir('../..');
 			continue;
 		}
-		exec(`git add '${submodule === 'enc-amf' ? 'resources/locale/*-*.ini' : 'data/locale/*-*.ini'}'`);
+		exec(`git add '${submodule === 'enc-amf' ? 'resources/locale/*-*.ini '} data/locale/*-*.ini'`);
 		exec(`git commit -m '${STRINGS.git.commitTitle}'`);
 		exec('git push');
 		process.chdir('../..');
