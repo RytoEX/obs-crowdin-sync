@@ -106,12 +106,12 @@ export async function upload(changedFiles: string[], submoduleName?: string): Pr
 				directoryId: await getDirId('Plugins'),
 				exportOptions: { exportPattern: '/plugins/%file_name%/data/locale/%locale%.ini' }
 			});
-		} else if (/^UI\/frontend-plugins\/.*\/data\/locale$/.test(PATH.parse(filePath).dir)) {
+		} else if (/^frontend\/plugins\/.*\/data\/locale$/.test(PATH.parse(filePath).dir)) {
 			await sourceFilesApi.createFile(PROJECT_ID, {
 				name: `${pathParts[2]}.ini`,
 				storageId: await storageId(),
 				directoryId: await getDirId('Frontend'),
-				exportOptions: { exportPattern: '/UI/frontend-plugins/%file_name%/data/locale/%locale%.ini' }
+				exportOptions: { exportPattern: '/frontend/plugins/%file_name%/data/locale/%locale%.ini' }
 			});
 		} else {
 			ACTIONS.error(`${filePath} not uploaded to Crowdin due to its unexpected location. This may be intended.`);
