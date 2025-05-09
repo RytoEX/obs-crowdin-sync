@@ -13,8 +13,8 @@ const noticeMock = jest.spyOn(ACTIONS, 'notice').mockImplementation(() => {});
 
 it(`${upload.name} (main repo)`, async () => {
 	MOCK_FS({
-		'UI/data/locale/en-US.ini': '\n# Comment"\nYes="Yes"\nCancel="Cancel"\n',
-		'UI/frontend-plugins/some-frontend/data/locale/en-US.ini': 'MyFrontendString="Text"',
+		'frontend/data/locale/en-US.ini': '\n# Comment"\nYes="Yes"\nCancel="Cancel"\n',
+		'frontend/plugins/some-frontend/data/locale/en-US.ini': 'MyFrontendString="Text"',
 		'plugins/sndio/data/locale/en-US.ini': 'Device="Device"\nRate="Rate"\n',
 		'plugins/my-plugin/data/locale/en-US.ini': 'MyPluginString="Text"',
 		'plugins/data/locale/en-US.ini': '123'
@@ -53,7 +53,7 @@ it(`${upload.name} (main repo)`, async () => {
 							exportPattern: '/%file_name%/data/locale/%locale%.ini'
 						},
 						id: 29,
-						name: 'UI.ini'
+						name: 'frontend.ini'
 					}
 				},
 				{
@@ -85,7 +85,7 @@ it(`${upload.name} (main repo)`, async () => {
 			directoryId: 136,
 			name: 'some-frontend.ini',
 			exportOptions: {
-				exportPattern: '/UI/frontend-plugins/%file_name%/data/locale/%locale%.ini'
+				exportPattern: '/frontend/plugins/%file_name%/data/locale/%locale%.ini'
 			}
 		})
 		.reply(201)
@@ -115,16 +115,16 @@ it(`${upload.name} (main repo)`, async () => {
 	const errorMock = jest.spyOn(ACTIONS, 'error').mockImplementation(() => {});
 
 	await upload([
-		'UI/data/locale/en-US.ini',
+		'frontend/data/locale/en-US.ini',
 		'AUTHORS',
-		'UI/frontend-plugins/some-frontend/data/locale/en-US.ini',
+		'frontend/plugins/some-frontend/data/locale/en-US.ini',
 		'plugins/my-plugin/data/locale/en-US.ini',
 		'plugins/data/locale/en-US.ini',
 		'plugins/removed/data/locale/en-US.ini'
 	]);
 
-	expect(noticeMock).toBeCalledWith('UI/data/locale/en-US.ini updated on Crowdin.');
-	expect(noticeMock).toBeCalledWith('UI/frontend-plugins/some-frontend/data/locale/en-US.ini uploaded to Crowdin.');
+	expect(noticeMock).toBeCalledWith('frontend/data/locale/en-US.ini updated on Crowdin.');
+	expect(noticeMock).toBeCalledWith('frontend/plugins/some-frontend/data/locale/en-US.ini uploaded to Crowdin.');
 	expect(noticeMock).toBeCalledWith('plugins/my-plugin/data/locale/en-US.ini uploaded to Crowdin.');
 	expect(noticeMock).toBeCalledWith('plugins/removed/data/locale/en-US.ini removed from Crowdin.');
 	expect(errorMock).toBeCalledWith(
