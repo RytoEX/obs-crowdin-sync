@@ -62,17 +62,17 @@ const BASE_NAME = PATH.basename(PATH.resolve('.'));
 
 it(removePreviousTranslations.name, async () => {
 	MOCK_FS({
-		'UI/data/locale/an-ES.ini': 'previous',
-		'UI/data/locale/en-US.ini': 'source file',
+		'frontend/data/locale/an-ES.ini': 'previous',
+		'frontend/data/locale/en-US.ini': 'source file',
 		'plugins/decklink/data/locale/an-ES.ini': 'previous',
 		'plugins/another/data/locale/an-ES.ini': 'previous'
 	});
-	await removePreviousTranslations(['UI/data/locale', 'plugins/another/data/locale']);
+	await removePreviousTranslations(['frontend/data/locale', 'plugins/another/data/locale']);
 	expect(await convertFileStructureToObject('.')).toEqual({
 		name: BASE_NAME,
 		content: [
 			{
-				name: 'UI/data/locale/en-US.ini',
+				name: 'frontend/data/locale/en-US.ini',
 				content: 'source file'
 			},
 			{
@@ -130,7 +130,7 @@ it(getFilePaths.name, async () => {
 							exportPattern: '/%file_name%/data/locale/%locale%.ini'
 						},
 						id: 29,
-						name: 'UI.ini'
+						name: 'frontend.ini'
 					}
 				},
 				{
@@ -147,7 +147,7 @@ it(getFilePaths.name, async () => {
 
 	expect(await getFilePaths()).toEqual(
 		new Map<number, string>([
-			[29, 'UI/data/locale'],
+			[29, 'frontend/data/locale'],
 			[718, 'desktop-entry']
 		])
 	);
@@ -365,7 +365,7 @@ it(getSourceFiles.name, async () => {
 	expect(
 		await getSourceFiles(
 			new Map<number, string>([
-				[29, 'UI/data/locale'],
+				[29, 'frontend/data/locale'],
 				[718, 'desktop-entry']
 			])
 		)
@@ -385,20 +385,20 @@ it(getSourceFiles.name, async () => {
 
 it(processBuild.name, async () => {
 	MOCK_FS({
-		'UI/data/locale': {
+		'frontend/data/locale': {
 			'en-US.ini': 'source file'
 		},
-		'UI/frontend-plugins/frontend-tools/data/locale': {},
+		'frontend/plugins/frontend-tools/data/locale': {},
 		'plugins/mac-virtualcam/src/obs-plugin/data/locale': {},
 		'plugins/decklink/data/locale': {}
 	});
 	const crowdinBuildFiles: Record<string, string> = {
-		'UI/data/locale/de-DE.ini': '\nLanguage="Deutsch"\nOK="Okay"\n\nApply="Übernehmen"\nCancel="Abbre\nchen"\n\n',
-		'UI/data/locale/fr-FR.ini': 'abc="123"',
-		'UI/data/locale/en-GB.ini': 'Language="English (UK)"\nOK="OK"',
-		'UI/data/locale/em-pty.ini': 'OK="OK"',
-		'UI/data/locale/bem-ZM.ini': '\n\n\n\n\n\n',
-		'UI/frontend-plugins/frontend-tools/data/locale/de-DE.ini': 'abc="123"',
+		'frontend/data/locale/de-DE.ini': '\nLanguage="Deutsch"\nOK="Okay"\n\nApply="Übernehmen"\nCancel="Abbre\nchen"\n\n',
+		'frontend/data/locale/fr-FR.ini': 'abc="123"',
+		'frontend/data/locale/en-GB.ini': 'Language="English (UK)"\nOK="OK"',
+		'frontend/data/locale/em-pty.ini': 'OK="OK"',
+		'frontend/data/locale/bem-ZM.ini': '\n\n\n\n\n\n',
+		'frontend/plugins/frontend-tools/data/locale/de-DE.ini': 'abc="123"',
 		'plugins/mac-virtualcam/src/obs-plugin/data/locale/de-DE.ini': 'abc="123"',
 		'plugins/decklink/data/locale/de-DE.ini': 'abc="123"',
 		'desktop-entry/en_GB.ini': 'GenericName="enName"\nComment="enComment"',
@@ -432,7 +432,7 @@ it(processBuild.name, async () => {
 					])
 				]
 			]),
-			new Map<number, string>([[29, 'UI/data/locale']])
+			new Map<number, string>([[29, 'frontend/data/locale']])
 		)
 	).toEqual({
 		desktopFileTranslations: new Map<string, Map<string, string>>([
@@ -460,7 +460,7 @@ it(processBuild.name, async () => {
 		name: BASE_NAME,
 		content: [
 			{
-				name: 'UI',
+				name: 'frontend',
 				content: [
 					{
 						name: 'data/locale',
@@ -488,7 +488,7 @@ it(processBuild.name, async () => {
 						]
 					},
 					{
-						name: 'frontend-plugins/frontend-tools/data/locale/de-DE.ini',
+						name: 'plugins/frontend-tools/data/locale/de-DE.ini',
 						content: 'abc="123"\n'
 					}
 				]
@@ -544,7 +544,7 @@ it(createLocaleFile.name, async () => {
 			]
 		});
 
-	MOCK_FS({ 'UI/data/locale.ini': '[ab-cd]\nName=LanguageName\n[de-DE]\nName=Deutsch\n[fr-FR]\nName=Français\n\n' });
+	MOCK_FS({ 'frontend/data/locale.ini': '[ab-cd]\nName=LanguageName\n[de-DE]\nName=Deutsch\n[fr-FR]\nName=Français\n\n' });
 
 	await createLocaleFile(
 		new Map<string, string>([
@@ -560,14 +560,14 @@ it(createLocaleFile.name, async () => {
 			['da-DK', 'da']
 		])
 	);
-	expect(await FSE.readFile('UI/data/locale.ini', 'utf-8')).toBe(
+	expect(await FSE.readFile('frontend/data/locale.ini', 'utf-8')).toBe(
 		'[da-DK]\nName=Dansk\n\n[en-US]\nName=English\n\n[fr-FR]\nName=Français\n'
 	);
 });
 
 it(createDesktopFile.name, async () => {
 	MOCK_FS({
-		'UI/cmake/linux/com.obsproject.Studio.desktop':
+		'frontend/cmake/linux/com.obsproject.Studio.desktop':
 			'[Desktop Entry]\nVersion=1.0\nName=OBS Studio\n\nGenericName[an_ES]=abc\nComment[an_ES]=abc\n'
 	});
 	await createDesktopFile(
@@ -588,7 +588,7 @@ it(createDesktopFile.name, async () => {
 			]
 		])
 	);
-	expect(await FSE.readFile('UI/cmake/linux/com.obsproject.Studio.desktop', 'utf-8')).toBe(
+	expect(await FSE.readFile('frontend/cmake/linux/com.obsproject.Studio.desktop', 'utf-8')).toBe(
 		'[Desktop Entry]\nVersion=1.0\nName=OBS Studio\n\nGenericName[de_DE]=deName\nComment[de_DE]=deComment\nGenericName[en_GB]=enName\nComment[en_GB]=enComment\n'
 	);
 });

@@ -39,8 +39,8 @@ async function getSubmodules(): Promise<string[]> {
  * @param sourceFilePaths List of soure file export paths.
  */
 export async function removePreviousTranslations(sourceFilePaths: string[]): Promise<void> {
-	let pathsToClear: string[] = ['UI/data/locale', 'plugins/mac-virtualcam/src/obs-plugin/data/locale'];
-	for (const pluginRootDir of ['plugins', 'UI/frontend-plugins']) {
+	let pathsToClear: string[] = ['frontend/data/locale', 'plugins/mac-virtualcam/src/obs-plugin/data/locale'];
+	for (const pluginRootDir of ['plugins', 'frontend/plugins']) {
 		if (!(await FSE.pathExists(pluginRootDir))) {
 			continue;
 		}
@@ -105,7 +105,7 @@ export async function getSourceFiles(filePaths: Map<number, string>): Promise<Ma
 		const { fileId } = sourceString;
 		const filePath = filePaths.get(fileId);
 		const rootDir = filePath?.substring(0, filePath.indexOf('/'));
-		if (filePaths.has(fileId) && !['UI', 'plugins'].includes(rootDir!)) {
+		if (filePaths.has(fileId) && !['frontend', 'plugins'].includes(rootDir!)) {
 			continue;
 		}
 		if (fileId !== currentFileId) {
@@ -306,7 +306,7 @@ export async function processBuild(
 		let translationContent = '';
 		if (translatedSourceMap.has(entryDir)) {
 			let readLanguageName = false;
-			if (entryDir === 'UI/data/locale') {
+			if (entryDir === 'frontend/data/locale') {
 				readLanguageName = true;
 			}
 			for (const line of fileContent.split('\n')) {
@@ -347,7 +347,7 @@ export async function processBuild(
  * @param languageFiles Locales mapped to their desktop file translations.
  */
 export async function createDesktopFile(languageFiles: Map<string, Map<string, string>>): Promise<void> {
-	const filePath = 'UI/cmake/linux/com.obsproject.Studio.desktop';
+	const filePath = 'frontend/cmake/linux/com.obsproject.Studio.desktop';
 	const desktopFile = normalize(await FSE.readFile(filePath, 'utf-8'));
 	let result = '';
 	for (const line of desktopFile.split('\n')) {
@@ -378,7 +378,7 @@ export async function createLocaleFile(languageList: Map<string, string>, langua
 		progressMap.set(language.languageId, language.translationProgress);
 	}
 	const languagesInList = [];
-	const languagueListPath = 'UI/data/locale.ini';
+	const languagueListPath = 'frontend/data/locale.ini';
 	for (const line of normalize(await FSE.readFile(languagueListPath, 'utf-8')).split('\n')) {
 		if (line.startsWith('[') && line !== `[${STRINGS.englishLanguage.locale}]`) {
 			languagesInList.push(line.substring(1, line.length - 1));
@@ -435,10 +435,10 @@ function pushChanges(detachedSubmodules: string[], submodules: string[]): void {
 		'AUTHORS',
 		'plugins/*/data/locale/*-*.ini',
 		'plugins/mac-virtualcam/src/obs-plugin/data/locale/*-*.ini',
-		'UI/data/locale.ini',
-		'UI/data/locale/*-*.ini',
-		'UI/cmake/linux/com.obsproject.Studio.desktop',
-		'UI/frontend-plugins/*/data/locale/*-*.ini'
+		'frontend/data/locale.ini',
+		'frontend/data/locale/*-*.ini',
+		'frontend/cmake/linux/com.obsproject.Studio.desktop',
+		'frontend/plugins/*/data/locale/*-*.ini'
 	]) {
 		exec(`git add '${allowedPath}'`);
 	}
